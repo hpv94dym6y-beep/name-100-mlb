@@ -1,0 +1,7 @@
+{
+  "name": "name-100-mlb",
+  "version": "1.0.0",
+  "private": true,
+  "description": "How fast can you name 100 MLB players? Verified against the official MLB Stats API.",
+  "type": "module"
+}
