@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Name 100 MLB Players</title>
+<meta name="description" content="How fast can you name 100 MLB players?">
+<meta property="og:title" content="Name 100 MLB Players">
+<meta property="og:description" content="How fast can you name 100 MLB players? Race the clock.">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Source+Code+Pro:wght@400;600&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --felt:#0d2b1a; --felt-mid:#122e1d; --felt-light:#1a3d28; --cream:#f5f0e8;
+  --amber:#f5a623; --amber-dim:#c47d10; --white:#fff; --green-check:#2ecc71; --red:#e74c3c;
+  --border:rgba(245,166,35,0.22); --border-bright:rgba(245,166,35,0.55);
+  --FD:'Oswald',sans-serif; --FM:'Source Code Pro',monospace; --FB:'Inter',sans-serif;
+}
+body { background:var(--felt); color:var(--cream); font-family:var(--FB); min-height:100vh; display:flex; flex-direction:column; align-items:center; }
+.nav { width:100%; max-width:760px; display:flex; padding:1.25rem 1.5rem 0; }
+.nav-tab { font-family:var(--FM); font-size:0.68rem; letter-spacing:0.12em; text-transform:uppercase; padding:0.45rem 1rem; border:1px solid var(--border); border-bottom:none; background:transparent; color:rgba(245,240,232,0.4); cursor:pointer; transition:all 0.15s; border-radius:3px 3px 0 0; }
+.nav-tab:first-child { border-radius:3px 0 0 0; }
+.nav-tab + .nav-tab { border-left:none; }
+.nav-tab.active { background:var(--felt-mid); color:var(--amber); border-color:var(--border-bright); }
+.panel { display:none; width:100%; max-width:760px; padding:0 1.5rem 3rem; }
+.panel.active { display:flex; flex-direction:column; align-items:center; }
+.game-header { width:100%; padding:1.5rem 0 0; text-align:center; border-top:1px solid var(--border-bright); }
+.eyebrow { font-family:var(--FM); font-size:0.68rem; letter-spacing:0.22em; color:var(--amber); text-transform:uppercase; margin-bottom:0.4rem; }
+h1 { font-family:var(--FD); font-size:clamp(1.8rem,6vw,3rem); font-weight:700; letter-spacing:0.04em; text-transform:uppercase; color:var(--white); line-height:1; }
+h1 span { color:var(--amber); }
+.scoreboard { display:flex; justify-content:center; align-items:stretch; margin:1.25rem auto 0; border:1px solid var(--border-bright); border-radius:4px; overflow:hidden; width:fit-content; max-width:100%; flex-wrap:wrap; }
+.score-block { text-align:center; padding:0.6rem 1.2rem; border-right:1px solid var(--border); background:var(--felt-mid); }
+.score-block:last-child { border-right:none; }
+.score-label { font-family:var(--FM); font-size:0.58rem; letter-spacing:0.15em; color:var(--amber-dim); text-transform:uppercase; display:block; margin-bottom:0.1rem; }
+.score-value { font-family:var(--FM); font-size:1.5rem; font-weight:600; color:var(--amber); line-height:1; }
+#play-count-val { font-size:1.1rem; }
+.intro-box { background:var(--felt-mid); border:1px solid var(--border); border-radius:4px; padding:1.25rem 1.5rem; margin-bottom:1rem; width:100%; max-width:520px; }
+.intro-box p { font-size:0.82rem; color:rgba(245,240,232,0.7); margin-bottom:0.45rem; line-height:1.55; }
+.intro-box p:last-child { margin-bottom:0; }
+.intro-box strong { color:var(--cream); }
+.username-row { display:flex; flex-direction:column; gap:0.35rem; margin-bottom:1rem; width:100%; max-width:520px; }
+.username-row label { font-family:var(--FM); font-size:0.65rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--amber-dim); }
+.text-input { padding:0.7rem 1rem; background:var(--felt-light); border:1.5px solid var(--border); border-radius:4px; color:var(--cream); font-family:var(--FB); font-size:0.95rem; outline:none; width:100%; transition:border-color 0.15s; }
+.text-input:focus { border-color:var(--amber); }
+.text-input::placeholder { color:rgba(245,240,232,0.25); }
+.start-btn { display:block; width:100%; max-width:520px; padding:0.85rem; background:var(--amber); color:#0a1f10; border:none; border-radius:4px; font-family:var(--FD); font-size:1.05rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; cursor:pointer; transition:background 0.15s; }
+.start-btn:hover { background:#f7b740; }
+.input-row { display:flex; gap:0.5rem; width:100%; margin-bottom:0.6rem; margin-top:1rem; }
+#playerInput { flex:1; padding:0.7rem 1rem; background:var(--felt-light); border:1.5px solid var(--border); border-radius:4px; color:var(--cream); font-family:var(--FB); font-size:1rem; outline:none; transition:border-color 0.15s; }
+#playerInput:focus { border-color:var(--amber); }
+#playerInput.correct-flash { border-color:var(--green-check); }
+#playerInput:disabled { opacity:0.5; }
+.verify-badge { display:flex; align-items:center; justify-content:center; min-width:2.4rem; height:2.6rem; border-radius:4px; background:var(--felt-mid); border:1px solid var(--border); font-size:0.7rem; font-family:var(--FM); color:var(--amber-dim); transition:all 0.2s; flex-shrink:0; }
+.verify-badge.checking { color:var(--amber); border-color:var(--amber); animation:pulse 1s infinite; }
+.verify-badge.ok { color:var(--green-check); border-color:var(--green-check); }
+.verify-badge.fail { color:var(--red); border-color:var(--red); }
+@keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.4;} }
+#feedback { height:1.1rem; font-family:var(--FM); font-size:0.7rem; letter-spacing:0.04em; color:var(--amber); text-align:center; margin-bottom:0.6rem; }
+.progress-wrap { width:100%; height:3px; background:var(--felt-light); border-radius:2px; margin-bottom:0.9rem; overflow:hidden; }
+.progress-fill { height:100%; background:var(--amber); border-radius:2px; transition:width 0.3s ease; width:0%; }
+.lineup-header { width:100%; display:flex; align-items:baseline; justify-content:space-between; margin-bottom:0.4rem; }
+.lineup-title { font-family:var(--FD); font-size:0.75rem; letter-spacing:0.12em; text-transform:uppercase; color:rgba(245,240,232,0.4); }
+#lineup { width:100%; display:grid; grid-template-columns:repeat(5,1fr); gap:0.3rem; list-style:none; }
+@media (max-width:560px){ #lineup{grid-template-columns:repeat(3,1fr);} }
+@media (max-width:380px){ #lineup{grid-template-columns:repeat(2,1fr);} }
+.lineup-slot { background:var(--felt-mid); border:1px solid var(--border); border-radius:3px; padding:0.35rem 0.5rem; display:flex; align-items:center; gap:0.3rem; min-height:1.9rem; }
+.lineup-slot.filled { background:rgba(46,204,113,0.08); border-color:rgba(46,204,113,0.25); animation:pop-in 0.22s cubic-bezier(0.34,1.56,0.64,1); }
+@keyframes pop-in { 0%{transform:scale(0.82);opacity:0.4;} 100%{transform:scale(1);opacity:1;} }
+.slot-num { font-family:var(--FM); font-size:0.55rem; color:rgba(245,240,232,0.2); min-width:1.2rem; flex-shrink:0; }
+.slot-num.filled { color:rgba(46,204,113,0.4); }
+.slot-name { font-family:var(--FB); font-size:0.67rem; color:var(--cream); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+#win-screen { display:none; flex-direction:column; align-items:center; text-align:center; width:100%; padding:2rem 0 1rem; }
+.win-emoji { font-size:2.8rem; margin-bottom:0.6rem; }
+.win-title { font-family:var(--FD); font-size:2.2rem; font-weight:700; letter-spacing:0.05em; text-transform:uppercase; color:var(--amber); line-height:1; margin-bottom:0.4rem; }
+.win-time { font-family:var(--FM); font-size:1rem; color:var(--cream); margin-bottom:1.25rem; }
+.btn-row { display:flex; gap:0.75rem; flex-wrap:wrap; justify-content:center; }
+.outline-btn { padding:0.65rem 1.8rem; background:transparent; border:1.5px solid var(--amber); border-radius:4px; color:var(--amber); font-family:var(--FD); font-size:0.85rem; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; cursor:pointer; transition:background 0.15s,color 0.15s; }
+.outline-btn:hover { background:var(--amber); color:var(--felt); }
+.lb-header { width:100%; padding:1.5rem 0 1rem; border-top:1px solid var(--border-bright); }
+.lb-header h2 { font-family:var(--FD); font-size:1.5rem; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:var(--white); margin-bottom:0.25rem; }
+.lb-header p { font-family:var(--FM); font-size:0.65rem; color:rgba(245,240,232,0.35); letter-spacing:0.05em; }
+.lb-section-title { font-family:var(--FM); font-size:0.62rem; letter-spacing:0.15em; text-transform:uppercase; color:var(--amber-dim); margin:1.25rem 0 0.5rem; width:100%; }
+.lb-table { width:100%; border-collapse:collapse; border:1px solid var(--border); border-radius:4px; overflow:hidden; font-size:0.82rem; }
+.lb-table thead tr { background:var(--felt-mid); border-bottom:1px solid var(--border); }
+.lb-table th { font-family:var(--FM); font-size:0.58rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--amber-dim); padding:0.5rem 0.75rem; text-align:left; font-weight:400; }
+.lb-table th.right, .lb-table td.right { text-align:right; }
+.lb-table tbody tr { border-bottom:1px solid rgba(245,166,35,0.08); transition:background 0.12s; }
+.lb-table tbody tr:last-child { border-bottom:none; }
+.lb-table tbody tr:hover { background:rgba(245,166,35,0.04); }
+.lb-table td { padding:0.55rem 0.75rem; color:var(--cream); font-family:var(--FB); font-size:0.8rem; }
+.lb-table td.rank { font-family:var(--FM); font-size:0.7rem; color:var(--amber-dim); width:2rem; }
+.lb-table td.mono { font-family:var(--FM); font-size:0.75rem; color:var(--amber); }
+.lb-empty { font-family:var(--FM); font-size:0.72rem; color:rgba(245,240,232,0.3); letter-spacing:0.05em; padding:1.5rem 0; text-align:center; width:100%; }
+.lb-yours { background:rgba(245,166,35,0.07) !important; border-left:2px solid var(--amber) !important; }
+footer { padding:1rem; font-size:0.65rem; color:rgba(245,240,232,0.2); font-family:var(--FM); letter-spacing:0.05em; text-align:center; }
+</style>
+</head>
+<body>
+<nav class="nav">
+  <button class="nav-tab active" onclick="showPanel('game-panel', this)">⚾ Play</button>
+  <button class="nav-tab" onclick="showPanel('lb-panel', this); renderLeaderboard()">🏆 Leaderboard</button>
+</nav>
+
+<div class="panel active" id="game-panel">
+  <div class="game-header">
+    <p class="eyebrow">MLB Challenge</p>
+    <h1>Name <span>100</span> Baseball Players</h1>
+    <div class="scoreboard">
+      <div class="score-block"><span class="score-label">Named</span><span class="score-value" id="count">0</span></div>
+      <div class="score-block"><span class="score-label">Time</span><span class="score-value" id="timer">0:00</span></div>
+      <div class="score-block"><span class="score-label">Left</span><span class="score-value" id="remaining">100</span></div>
+      <div class="score-block"><span class="score-label">Times Played</span><span class="score-value" id="play-count-val">—</span></div>
+    </div>
+  </div>
+
+  <div id="intro" style="width:100%;max-width:520px;margin-top:1.25rem;">
+    <div class="intro-box">
+      <p><strong>Rules</strong></p>
+      <p>• Any <strong>real MLB player</strong> — active or retired, any era</p>
+      <p>• Names checked live against the official MLB database</p>
+      <p>• <strong>No repeats.</strong> Name <strong>100</strong> to win.</p>
+      <p>• The clock counts up. Fastest time wins.</p>
+    </div>
+    <div class="username-row">
+      <label for="usernameInput">Your name / handle (for the leaderboard)</label>
+      <input type="text" id="usernameInput" class="text-input" placeholder="e.g. SamFromBrooklyn" maxlength="24" autocomplete="off" />
+    </div>
+    <button class="start-btn" id="startBtn" onclick="startGame()">⚾ Play Ball</button>
+  </div>
+
+  <div id="game-area" style="display:none;width:100%;">
+    <div class="input-row">
+      <input type="text" id="playerInput" placeholder="Type a player's name..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" />
+      <div class="verify-badge" id="verifyBadge">MLB</div>
+    </div>
+    <div id="feedback"></div>
+    <div class="progress-wrap"><div class="progress-fill" id="progressFill"></div></div>
+    <div class="lineup-header"><span class="lineup-title">Lineup Card</span></div>
+    <ul id="lineup"></ul>
+
+    <div id="win-screen">
+      <div class="win-emoji">🏆</div>
+      <div class="win-title">Champion!</div>
+      <div class="win-time" id="win-time-display"></div>
+      <div class="btn-row">
+        <button class="outline-btn" onclick="resetGame()">Play Again</button>
+        <button class="outline-btn" id="shareBtn" onclick="shareResult()">📋 Share Result</button>
+        <button class="outline-btn" onclick="showPanel('lb-panel', document.querySelectorAll('.nav-tab')[1]); renderLeaderboard()">View Leaderboard</button>
+      </div>
+      <div id="share-copied" style="display:none;margin-top:0.75rem;font-family:var(--FM);font-size:0.7rem;color:var(--green-check);letter-spacing:0.08em;">✓ Copied to clipboard!</div>
+    </div>
+  </div>
+</div>
+
+<div class="panel" id="lb-panel">
+  <div class="lb-header"><h2>🏆 Leaderboard</h2><p>Top times · all-time global · updated live</p></div>
+  <div id="lb-content" style="width:100%;"></div>
+</div>
+
+<footer>⚾ name-100-mlb · verified against the official MLB database</footer>
+
+<script>
+// ── STATE ──
+let found = new Set(), foundDisplay = [], timerInterval = null, seconds = 0;
+let gameActive = false, currentUsername = 'Anonymous', verifyDebounce = null, lastVal = '';
+const verifiedCache = {};
+
+// Seed list (instant accept for common players; reduces API calls)
+const SEED = {
+"mike trout":"Mike Trout","trout":"Mike Trout","shohei ohtani":"Shohei Ohtani","ohtani":"Shohei Ohtani","mookie betts":"Mookie Betts","betts":"Mookie Betts","freddie freeman":"Freddie Freeman","freeman":"Freddie Freeman","aaron judge":"Aaron Judge","judge":"Aaron Judge","juan soto":"Juan Soto","soto":"Juan Soto","yordan alvarez":"Yordan Alvarez","bryce harper":"Bryce Harper","harper":"Bryce Harper","trea turner":"Trea Turner","francisco lindor":"Francisco Lindor","lindor":"Francisco Lindor","jose ramirez":"Jose Ramirez","nolan arenado":"Nolan Arenado","arenado":"Nolan Arenado","paul goldschmidt":"Paul Goldschmidt","goldschmidt":"Paul Goldschmidt","max scherzer":"Max Scherzer","scherzer":"Max Scherzer","justin verlander":"Justin Verlander","verlander":"Justin Verlander","jacob degrom":"Jacob deGrom","degrom":"Jacob deGrom","gerrit cole":"Gerrit Cole","clayton kershaw":"Clayton Kershaw","kershaw":"Clayton Kershaw","babe ruth":"Babe Ruth","ruth":"Babe Ruth","willie mays":"Willie Mays","mays":"Willie Mays","ted williams":"Ted Williams","lou gehrig":"Lou Gehrig","gehrig":"Lou Gehrig","hank aaron":"Hank Aaron","mickey mantle":"Mickey Mantle","mantle":"Mickey Mantle","jackie robinson":"Jackie Robinson","joe dimaggio":"Joe DiMaggio","dimaggio":"Joe DiMaggio","derek jeter":"Derek Jeter","jeter":"Derek Jeter","cal ripken jr":"Cal Ripken Jr.","ripken":"Cal Ripken Jr.","roberto clemente":"Roberto Clemente","clemente":"Roberto Clemente","mike schmidt":"Mike Schmidt","tony gwynn":"Tony Gwynn","gwynn":"Tony Gwynn","nolan ryan":"Nolan Ryan","sandy koufax":"Sandy Koufax","koufax":"Sandy Koufax","bob gibson":"Bob Gibson","tom seaver":"Tom Seaver","seaver":"Tom Seaver","greg maddux":"Greg Maddux","maddux":"Greg Maddux","pedro martinez":"Pedro Martinez","randy johnson":"Randy Johnson","roger clemens":"Roger Clemens","clemens":"Roger Clemens","ken griffey jr":"Ken Griffey Jr.","griffey":"Ken Griffey Jr.","barry bonds":"Barry Bonds","bonds":"Barry Bonds","alex rodriguez":"Alex Rodriguez","albert pujols":"Albert Pujols","pujols":"Albert Pujols","david ortiz":"David Ortiz","ortiz":"David Ortiz","mariano rivera":"Mariano Rivera","ichiro suzuki":"Ichiro Suzuki","ichiro":"Ichiro Suzuki","miguel cabrera":"Miguel Cabrera","cabrera":"Miguel Cabrera","cy young":"Cy Young","ty cobb":"Ty Cobb","cobb":"Ty Cobb","stan musial":"Stan Musial","musial":"Stan Musial","yogi berra":"Yogi Berra","berra":"Yogi Berra","ozzie smith":"Ozzie Smith","rickey henderson":"Rickey Henderson","frank thomas":"Frank Thomas","chipper jones":"Chipper Jones","chipper":"Chipper Jones"
+};
+
+function norm(s){ return (s||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9 ]/g,"").replace(/\s+/g," ").trim(); }
+
+// ── API HELPERS ──
+async function apiVerify(name){
+  const key = norm(name);
+  if (verifiedCache[key] !== undefined) return verifiedCache[key];
+  try {
+    const r = await fetch('/api/verify?name=' + encodeURIComponent(name));
+    const data = await r.json();
+    verifiedCache[key] = data;
+    return data;
+  } catch { return { valid:false, canonical:"" }; }
+}
+async function apiGetBoard(){
+  try { const r = await fetch('/api/leaderboard'); return await r.json(); }
+  catch { return { winners:[], best_attempts:[], plays:0 }; }
+}
+async function apiRecord(name, secs, count){
+  try { await fetch('/api/leaderboard', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({name,secs,count}) }); } catch {}
+}
+async function apiIncrementPlay(){
+  try { const r = await fetch('/api/leaderboard?action=play', { method:'POST' }); const d = await r.json(); if (d.plays!=null) document.getElementById('play-count-val').textContent = d.plays.toLocaleString(); } catch {}
+}
+async function loadPlayCount(){ const b = await apiGetBoard(); document.getElementById('play-count-val').textContent = (b.plays||0).toLocaleString(); }
+
+// ── GAME ──
+function showPanel(id, tab){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById(id).classList.add('active'); tab.classList.add('active');
+}
+
+async function startGame(){
+  currentUsername = document.getElementById('usernameInput').value.trim() || 'Anonymous';
+  document.getElementById('intro').style.display='none';
+  document.getElementById('game-area').style.display='block';
+  document.getElementById('win-screen').style.display='none';
+  const lineup = document.getElementById('lineup'); lineup.innerHTML='';
+  for (let i=1;i<=100;i++){ const li=document.createElement('li'); li.className='lineup-slot'; li.id='slot-'+i; li.innerHTML='<span class="slot-num">'+i+'</span><span class="slot-name"></span>'; lineup.appendChild(li); }
+  apiIncrementPlay();
+  found=new Set(); foundDisplay=[]; seconds=0; gameActive=true;
+  timerInterval=setInterval(()=>{ seconds++; const m=Math.floor(seconds/60),s=seconds%60; document.getElementById('timer').textContent=m+':'+String(s).padStart(2,'0'); },1000);
+  const inp=document.getElementById('playerInput'); inp.value=''; inp.focus(); inp.oninput=onInput;
+}
+
+async function onInput(e){
+  if (!gameActive) return;
+  const val=e.target.value.trim();
+  if (val===lastVal) return; lastVal=val;
+  if (!val){ setFeedback(''); setBadge('idle'); return; }
+  const key=norm(val);
+  const seed=SEED[key];
+  if (seed){ if (found.has(seed)){ setFeedback('Already named '+seed); setBadge('idle'); return; } setBadge('ok'); acceptPlayer(seed, e.target); return; }
+  for (const c of found){ if (norm(c)===key){ setFeedback('Already named '+c); setBadge('idle'); return; } }
+  clearTimeout(verifyDebounce); setBadge('checking');
+  verifyDebounce=setTimeout(async()=>{
+    if (!gameActive) return;
+    if (norm(document.getElementById('playerInput').value.trim())!==key) return;
+    const result=await apiVerify(val);
+    if (!gameActive) return;
+    if (norm(document.getElementById('playerInput').value.trim())!==key) return;
+    if (result.valid && result.canonical){
+      if (found.has(result.canonical)){ setFeedback('Already named '+result.canonical); setBadge('idle'); return; }
+      setBadge('ok'); acceptPlayer(result.canonical, document.getElementById('playerInput'));
+    } else { setBadge('idle'); setFeedback(''); }
+  },550);
+}
+
+function acceptPlayer(canonical, inputEl){
+  found.add(canonical); foundDisplay.push(canonical);
+  inputEl.value=''; lastVal='';
+  inputEl.classList.add('correct-flash'); setTimeout(()=>inputEl.classList.remove('correct-flash'),300);
+  setBadge('idle');
+  const n=found.size, slot=document.getElementById('slot-'+n);
+  if (slot){ slot.classList.add('filled'); slot.querySelector('.slot-name').textContent=canonical; slot.querySelector('.slot-num').classList.add('filled'); }
+  document.getElementById('count').textContent=n;
+  document.getElementById('remaining').textContent=100-n;
+  document.getElementById('progressFill').style.width=n+'%';
+  setFeedback('✓ '+canonical);
+  setTimeout(()=>{ if (document.getElementById('feedback').textContent.includes(canonical)) setFeedback(''); },1800);
+  if (n===100) win();
+}
+
+async function win(){
+  gameActive=false; clearInterval(timerInterval);
+  const m=Math.floor(seconds/60),s=seconds%60;
+  document.getElementById('playerInput').disabled=true;
+  await apiRecord(currentUsername, seconds, 100);
+  document.getElementById('win-screen').style.display='flex';
+  document.getElementById('win-time-display').textContent=currentUsername+' · 100 players in '+m+':'+String(s).padStart(2,'0');
+}
+
+function resetGame(){
+  gameActive=false; clearInterval(timerInterval);
+  found=new Set(); foundDisplay=[]; seconds=0; lastVal='';
+  document.getElementById('timer').textContent='0:00';
+  document.getElementById('count').textContent='0';
+  document.getElementById('remaining').textContent='100';
+  document.getElementById('progressFill').style.width='0%';
+  document.getElementById('playerInput').disabled=false;
+  document.getElementById('playerInput').value='';
+  document.getElementById('win-screen').style.display='none';
+  document.getElementById('game-area').style.display='none';
+  document.getElementById('intro').style.display='block';
+  setBadge('idle'); setFeedback('');
+}
+
+function setFeedback(m){ document.getElementById('feedback').textContent=m; }
+function setBadge(state){ const b=document.getElementById('verifyBadge'); b.className='verify-badge'; if(state==='checking'){b.classList.add('checking');b.textContent='···';} else if(state==='ok'){b.classList.add('ok');b.textContent='✓';} else if(state==='fail'){b.classList.add('fail');b.textContent='✗';} else {b.textContent='MLB';} }
+
+// ── SHARE ──
+function buildShareText(){
+  const count=found.size, m=Math.floor(seconds/60), s=seconds%60, t=m+':'+String(s).padStart(2,'0'), win=count===100;
+  const rows=[]; for(let r=0;r<10;r++){ let l=''; for(let c=0;c<10;c++){ l+=(r*10+c)<count?'🟩':'⬜'; } rows.push(l); }
+  let f='';
+  if (win&&seconds<120) f='Absolute baseball encyclopaedia. 🔥';
+  else if (win&&seconds<300) f='Certified baseball head. ⚾';
+  else if (win) f='Got there! 100 players named. 🏆';
+  else if (count>=80) f='So close — deep baseball knowledge.';
+  else if (count>=50) f='Solid effort. Think you can go further?';
+  else if (count>=25) f='Not bad — how many can you really name?';
+  else f='The sport humbles us all.';
+  const head=win?('⚾ Named 100 MLB Players in '+t+'!'):('⚾ Named '+count+'/100 MLB Players ('+t+')');
+  return [head,f,'',rows.join('\n'),'','🕹️ '+location.origin+' · Can you beat me?'].join('\n');
+}
+function shareResult(){
+  const text=buildShareText();
+  navigator.clipboard.writeText(text).then(()=>{
+    const el=document.getElementById('share-copied'); if(el){ el.style.display='block'; setTimeout(()=>el.style.display='none',2500); }
+    const btn=document.getElementById('shareBtn'); if(btn){ btn.textContent='✓ Copied!'; setTimeout(()=>btn.textContent='📋 Share Result',2000); }
+  }).catch(()=>window.prompt('Copy your result:',text));
+}
+function shareAttemptResult(){
+  const text=buildShareText();
+  navigator.clipboard.writeText(text).then(()=>{ const b=document.getElementById('share-attempt-btn'); if(b){b.textContent='✓ Copied!'; setTimeout(()=>b.textContent='📋 Share Result',2000);} }).catch(()=>window.prompt('Copy your result:',text));
+}
+
+// ── LEADERBOARD ──
+function fmtTime(secs){ const m=Math.floor(secs/60),s=secs%60; return m+':'+String(s).padStart(2,'0'); }
+function rankMedal(i){ if(i===0)return'🥇'; if(i===1)return'🥈'; if(i===2)return'🥉'; return '<span style="color:rgba(245,240,232,0.35)">'+(i+1)+'</span>'; }
+function escHtml(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+async function renderLeaderboard(){
+  const el=document.getElementById('lb-content'); el.innerHTML='<p class="lb-empty">Loading…</p>';
+  const lb=await apiGetBoard(); const winners=lb.winners||[], attempts=lb.best_attempts||[];
+  let html='';
+  html+='<p class="lb-section-title">🏆 Hall of Fame — Completed 100</p>';
+  if (!winners.length) html+='<p class="lb-empty">No completions yet — be the first!</p>';
+  else { html+='<table class="lb-table"><thead><tr><th style="width:2.5rem"></th><th>Player</th><th class="right">Time</th><th class="right">Date</th></tr></thead><tbody>';
+    winners.forEach((w,i)=>{ const mine=w.name===currentUsername?' class="lb-yours"':''; html+='<tr'+mine+'><td class="rank">'+rankMedal(i)+'</td><td>'+escHtml(w.name)+'</td><td class="right mono">'+fmtTime(w.secs)+'</td><td class="right" style="color:rgba(245,240,232,0.4);font-size:0.7rem;font-family:var(--FM)">'+w.date+'</td></tr>'; });
+    html+='</tbody></table>'; }
+  html+='<p class="lb-section-title" style="margin-top:1.75rem">⚡ Best Attempts — Most Players Named</p>';
+  if (!attempts.length) html+='<p class="lb-empty">No attempts saved yet.</p>';
+  else { html+='<table class="lb-table"><thead><tr><th style="width:2.5rem"></th><th>Player</th><th class="right">Named</th><th class="right">Time</th><th class="right">Date</th></tr></thead><tbody>';
+    attempts.forEach((w,i)=>{ const mine=w.name===currentUsername?' class="lb-yours"':''; html+='<tr'+mine+'><td class="rank">'+rankMedal(i)+'</td><td>'+escHtml(w.name)+'</td><td class="right mono">'+w.count+'</td><td class="right mono">'+fmtTime(w.secs)+'</td><td class="right" style="color:rgba(245,240,232,0.4);font-size:0.7rem;font-family:var(--FM)">'+w.date+'</td></tr>'; });
+    html+='</tbody></table>'; }
+  if (gameActive) html+='<div style="margin-top:1.25rem;text-align:center;display:flex;gap:0.75rem;justify-content:center;flex-wrap:wrap;"><button class="outline-btn" onclick="giveUpAndSave()">Save my progress & quit</button><button class="outline-btn" id="share-attempt-btn" onclick="shareAttemptResult()">📋 Share Result</button></div>';
+  el.innerHTML=html;
+}
+async function giveUpAndSave(){ if(!gameActive)return; gameActive=false; clearInterval(timerInterval); document.getElementById('playerInput').disabled=true; await apiRecord(currentUsername, seconds, found.size); await renderLeaderboard(); }
+
+// ── INIT ──
+loadPlayCount();
+</script>
+</body>
+</html>
